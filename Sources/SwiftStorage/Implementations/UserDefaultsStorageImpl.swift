@@ -60,17 +60,11 @@ final class UserDefaultsStorageImpl: Storage {
     }
 
     func load<T: Decodable>(for key: String) throws -> T {
-        guard let savedValue = userDefaults.string(forKey: key) else {
+        guard let data = userDefaults.data(forKey: key) else {
             throw StorageError.dataNotFound(key: key)
         }
         let decoder = JSONDecoder()
-
-        guard let data = savedValue.data(using: .utf8) else {
-            throw StorageError.corruptedData(key: key)
-        }
-
         return try decoder.decode(T.self, from: data)
-
     }
 
     init(groupName: String? = nil) {

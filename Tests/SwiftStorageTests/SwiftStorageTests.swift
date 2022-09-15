@@ -2,9 +2,26 @@ import XCTest
 @testable import SwiftStorage
 
 final class SwiftStorageTests: XCTestCase {
+    var storage: Storage!
+
+    override func setUp() {
+        storage = StorageFactory.create(for: .userDefaults)
+    }
+
     func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
+        try storage.save(value: true, for: "Bool")
+        let loadedTrueValue: Bool = try storage.load(for: "Bool")
+        XCTAssertTrue(loadedTrueValue)
+
+        try storage.save(value: false, for: "Bool")
+        let loadedFalseValue: Bool = try storage.load(for: "Bool")
+        XCTAssertFalse(loadedFalseValue)
+    }
+
+    func testSaveThenLoadString() throws {
+        try storage.save(string: "Example string", for: "String")
+        let loadedValue = try storage.loadString(for: "String")
+
+        XCTAssertEqual("Example string", loadedValue)
     }
 }
